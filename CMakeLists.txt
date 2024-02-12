@@ -64,7 +64,9 @@ target_compile_options(umtprd PUBLIC ${SYSTEMD_CFLAGS_OTHER})
 target_link_libraries(umtprd PUBLIC Threads::Threads ${SYSTEMD_LIBRARIES})
 
 install(TARGETS umtprd RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(PROGRAMS conf/umtprd-ffs.sh DESTINATION ${CMAKE_INSTALL_BINDIR})
-INSTALL(PROGRAMS conf/umtprd_gfs.sh DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(PROGRAMS conf/umtprd-ffs.sh DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(PROGRAMS conf/umtprd_gfs.sh DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-
+if(NOT USE_SYSTEMD)
+    install(FILE conf/umtprd.init DESTINATION ${SYSCONFDIR}/init.d RENAME umtprd)
+endif(NOT USE_SYSTEMD)
