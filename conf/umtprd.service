@@ -1,0 +1,14 @@
+[Unit]
+Description=MTP responder
+Before=usb-gadget.target
+Wants=usb-gadget.target
+
+[Service]
+Type=notify
+ExecStartPre=/usr/bin/umtp-setup.sh /tmp/umtprd %H
+ExecStart=/usr/bin/umtprd
+ExecStartPost=sh -c 'sleep 1; ls /sys/class/udc > /tmp/umtprd/cfg/usb_gadget/g1/UDC'
+ExecStopPost=/usr/bin/umtp-teardown.sh /tmp/umtprd
+
+[Install]
+WantedBy=usb-gadget.target

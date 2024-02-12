@@ -16,7 +16,6 @@ set(FILE_BUFFER_SZ "1024" CACHE FILEPATH "size of the file read buffer in kB. (M
 set(USB_TX_BUFFER_SZ "64" CACHE FILEPATH "size of the USB transmit buffer in kB")
 set(USB_RX_BUFFER_SZ "64" CACHE FILEPATH "size of the USB receive buffer in kB")
 
-
 FILE(GLOB SRC src/*.c src/mtp_operations/*.c)
 add_executable(umtprd ${SRC})
 
@@ -64,9 +63,12 @@ target_compile_options(umtprd PUBLIC ${SYSTEMD_CFLAGS_OTHER})
 target_link_libraries(umtprd PUBLIC Threads::Threads ${SYSTEMD_LIBRARIES})
 
 install(TARGETS umtprd RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
-install(PROGRAMS conf/umtprd-ffs.sh DESTINATION ${CMAKE_INSTALL_BINDIR})
-install(PROGRAMS conf/umtprd_gfs.sh DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(PROGRAMS conf/umtp-setup.sh DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(PROGRAMS conf/umtp-teardown.sh DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(FILES conf/umtprd.conf DESTINATION ${CMAKE_INSTALL_SYSCONFDIR}/umtprd/)
 
-if(NOT USE_SYSTEMD)
-    install(FILE conf/umtprd.init DESTINATION ${SYSCONFDIR}/init.d RENAME umtprd)
-endif(NOT USE_SYSTEMD)
+if(USE_SYSTEMD)
+    install(FILES conf/umtprd.service DESTINATION /lib/systemd/system/)
+else(USE_SYSTEMD)
+    install(PROGRAMS conf/umtprd.init DESTINATION ${CMAKE_INSTALL_SYSCONFDIR}/init.d RENAME umtprd)
+endif(USE_SYSTEMD)

@@ -9,15 +9,7 @@ UMTPRD_DAEMON_USER=root
 case "$1" in
   start)
     echo -n "Start uMTPrd daemon :"
-    if [ ! -d "$GADGETFS_PATH" ]; then
-      mkdir $GADGETFS_PATH
-    fi
-
-    mountpoint -q $GADGETFS_PATH
-    MOUNTED=$?
-    if [ "$MOUNTED" != "0" ] ; then
-        mount -t gadgetfs gadgetfs $GADGETFS_PATH
-    fi
+    /usr/bin/umtp-setup.sh
 
     start-stop-daemon -S --background --name $UMTPRD_DAEMON_NAME \
                                       --chuid $UMTPRD_DAEMON_USER \
